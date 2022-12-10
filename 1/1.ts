@@ -2,9 +2,9 @@ import fs from "fs";
 import path from "path"
 
 const input = fs.readFileSync(path.join(__dirname, './input.txt'), 'utf-8');
-console.log(Math.max(...input.split("\r\n\r\n").map(item => item.split("\r\n").reduce((a,b) => Number(a)+Number(b), 0))))
+console.log(Math.max(...input.split("\n\n").map(item => item.split("\n").reduce((a,b) => Number(a)+Number(b), 0))))
 console.time("b")
-const inputArray = input.split("\r\n\r\n").map(item => item.split("\r\n").reduce((a,b) => Number(a)+Number(b), 0))
+const inputArray = input.split("\n\n").map(item => item.split("\n").reduce((a,b) => Number(a)+Number(b), 0))
 console.timeEnd("b")
 console.time("a")
 const max = Math.max(...inputArray)

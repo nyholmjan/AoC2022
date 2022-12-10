@@ -1,9 +1,8 @@
 import { readFileSync } from "fs"
 import path from "path"
+import { getInputAsArray } from "../fs";
 
-const input = readFileSync(path.join(__dirname, "./input.txt"), "utf-8")
-
-const inputArray = input.split("\r\n");
+const inputArray = getInputAsArray(__dirname);
 
 console.log(inputArray.length)
 console.time("3/1")

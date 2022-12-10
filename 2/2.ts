@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path"
+import { getInputAsArray } from "../fs";
 
-const input = fs.readFileSync(path.join(__dirname, './input.txt'), 'utf-8');
+const inputArray = getInputAsArray(__dirname);
 
 const shapeScore = {
     X: 1,
@@ -26,8 +27,6 @@ const gameScore = {
         Z: 3
     }
 } as const;
-
-const inputArray = input.split("\r\n")
 
 console.time("Calculated scores")
 console.log(inputArray.reduce((a, b) => a += shapeScore[b.split(" ")[1] as keyof typeof shapeScore] + gameScore[b.split(" ")[0]  as keyof typeof gameScore][b.split(" ")[1] as keyof typeof gameScore["A"]], 0))
