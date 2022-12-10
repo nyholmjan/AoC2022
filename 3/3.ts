@@ -1,10 +1,7 @@
-import { readFileSync } from "fs"
-import path from "path"
 import { getInputAsArray } from "../fs";
 
 const inputArray = getInputAsArray(__dirname);
 
-console.log(inputArray.length)
 console.time("3/1")
 const res = inputArray.reduce((value, sack) => {
     const compA = sack.substring(0, sack.length / 2)

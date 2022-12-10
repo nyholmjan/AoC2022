@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path"
 import { getInputAsArray } from "../fs";
 
 const inputArray = getInputAsArray(__dirname);
