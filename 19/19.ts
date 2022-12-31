@@ -15,6 +15,12 @@ const parseInput = (input: string[]) => {
     })
 }
 
+// An ugly dog that looks like it will bite you comes through the door with your son. You look at the dog and hear your son saying: "Dad! Can I keep it?".
+// After some thought, you respond: "Yes, if it didn't bite you my son, you may keep it"
+const getKey = (minute: number, oreBots: number, clayBots: number, obsidianBots: number, geodeBots: number, geodes: number, obsidian: number, clay: number) => {
+    return  minute + (oreBots << 4) + (clayBots << 10) + (obsidianBots << 13) + (geodeBots << 16) + obsidian + (clay << 8) + (geodes << 16)
+}
+
 const solve1 = (input: string[], time = 24) => {
     const blueprints = parseInput(input)
     const result: { id: number, geodes: number}[] = []
@@ -58,7 +64,7 @@ const solve1 = (input: string[], time = 24) => {
 
             // Geode bot
             if (current.ore >= bp.geodeBotCost[0] && current.obsidian >= bp.geodeBotCost[1]) {
-                const key = `${minute},${current.oreBots},${current.clayBots},${current.obsidianBots},${current.geodeBots + 1},${geodes},${obsidian - bp.geodeBotCost[1]},${clay}`
+                const key = getKey(minute, current.oreBots, current.clayBots, current.obsidianBots, current.geodeBots + 1, geodes, obsidian - bp.geodeBotCost[1], clay)
                 if (!tried.has(key)) {
                     const next = { ...current, geodeBots: current.geodeBots + 1, ore: ore - bp.geodeBotCost[0], minute, clay, obsidian: obsidian - bp.geodeBotCost[1], geodes }
                     queue.push(next)
@@ -70,7 +76,7 @@ const solve1 = (input: string[], time = 24) => {
 
             // Ore bot
             if (current.ore >= bp.oreBotCost && current.oreBots < maxOreCost) {
-                const key = `${minute},${current.oreBots + 1},${current.clayBots},${current.obsidianBots},${current.geodeBots},${geodes},${obsidian},${clay}`
+                const key = getKey(minute, current.oreBots + 1, current.clayBots, current.obsidianBots, current.geodeBots, geodes, obsidian, clay)
                 if (!tried.has(key) && !(current.ore >= bp.geodeBotCost[0] && current.obsidian >= bp.geodeBotCost[1])) {
                     const next = { ...current, oreBots: current.oreBots + 1, ore: ore - bp.oreBotCost, minute, clay, obsidian, geodes }
                     queue.push(next)
@@ -79,7 +85,7 @@ const solve1 = (input: string[], time = 24) => {
             }
             // Clay bot
             if (current.ore >= bp.clayBotCost && current.clayBots < bp.obsidianBotCost[1]) {
-                const key = `${minute},${current.oreBots},${current.clayBots + 1},${current.obsidianBots},${current.geodeBots},${geodes},${obsidian},${clay}`
+                const key = getKey(minute, current.oreBots, current.clayBots + 1, current.obsidianBots, current.geodeBots, geodes, obsidian, clay)
                 if (!tried.has(key) && !(current.ore >= bp.geodeBotCost[0] && current.obsidian >= bp.geodeBotCost[1])) {
                     const next = { ...current, clayBots: current.clayBots + 1, ore: ore - bp.clayBotCost, minute, clay, obsidian, geodes }
                     queue.push(next)
@@ -88,7 +94,7 @@ const solve1 = (input: string[], time = 24) => {
             }
             // Obsidian bot
             if (current.ore >= bp.obsidianBotCost[0] && current.clay >= bp.obsidianBotCost[1] && current.obsidianBots < bp.geodeBotCost[1]) {
-                const key = `${minute},${current.oreBots},${current.clayBots},${current.obsidianBots + 1},${current.geodeBots},${geodes},${obsidian},${clay - bp.obsidianBotCost[1]}`
+                const key = getKey(minute, current.oreBots, current.clayBots, current.obsidianBots + 1, current.geodeBots, geodes, obsidian, clay - bp.obsidianBotCost[1])
                 if (!tried.has(key) && !(current.ore >= bp.geodeBotCost[0] && current.obsidian >= bp.geodeBotCost[1])) {
                     const next = { ...current, obsidianBots: current.obsidianBots + 1, ore: ore - bp.obsidianBotCost[0], minute, clay: clay - bp.obsidianBotCost[1], obsidian, geodes }
                     queue.push(next)
@@ -96,10 +102,10 @@ const solve1 = (input: string[], time = 24) => {
                 }
             }
             // Not building
-            const key = `${minute},${current.oreBots},${current.clayBots},${current.obsidianBots},${current.geodeBots},${geodes},${obsidian},${clay}`
-            if (!tried.has(key) && !(current.ore >= bp.geodeBotCost[0] && current.obsidian >= bp.geodeBotCost[1])) {
+            const bKey = getKey(minute, current.oreBots, current.clayBots, current.obsidianBots, current.geodeBots, geodes, obsidian, clay)
+            if (!tried.has(bKey) && !(current.ore >= bp.geodeBotCost[0] && current.obsidian >= bp.geodeBotCost[1])) {
+                tried.add(bKey)
                 queue.push({ ...current, ore, minute, clay, obsidian, geodes })
-                tried.add(key)
             }
         }
         console.log((result.length + 1) + "/" + blueprints.length + " " + result.reduce((a, b) => a + b.geodes * b.id, 0))
